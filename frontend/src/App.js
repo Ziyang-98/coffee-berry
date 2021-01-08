@@ -4,6 +4,7 @@ import "./App.css";
 import Header from "./Header/Header";
 import Home from "./Home/Home";
 import Market from "./Market/Market";
+import OrderForm from "./Orders/Form";
 import Orders from "./Orders/Orders";
 import Postings from "./Postings/Postings";
 import Footer from "./Footer/Footer";
@@ -29,7 +30,8 @@ class App extends Component {
         <Header title="Coffeeberry" sections={sections} />
         <Route exact path="/" component={Home} />
         <Route path="/market" component={Market} />
-        <Route path="/orders" component={Orders} />
+        <Route exact path="/orders" component={OrderForm} />
+        <Route path="/orders/:name" component={Orders} />
         <Route path="/postings" component={Postings} />
         <Footer
           title="Footer"

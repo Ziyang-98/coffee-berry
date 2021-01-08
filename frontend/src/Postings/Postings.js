@@ -12,7 +12,7 @@ export default function Market() {
     <React.Fragment>
       <CssBaseline />
       <Container maxWidth="lg" className={classes.root}>
-        <div>Postings WIP</div>
+        <div>Postings</div>
       </Container>
     </React.Fragment>
   );

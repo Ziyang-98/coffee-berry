@@ -10,7 +10,7 @@ function Copyright() {
     <Typography variant="body2" color="textSecondary" align="center">
       {"Copyright © "}
       <Link color="inherit" href="https://material-ui.com/">
-        Your Website
+        Coffeeberry
       </Link>{" "}
       {new Date().getFullYear()}
       {"."}
@@ -22,6 +22,10 @@ const useStyles = makeStyles((theme) => ({
   footer: {
     backgroundColor: theme.palette.background.paper,
     // marginTop: theme.spacing(8),
+    position: "relative",
+    left: 0,
+    bottom: 0,
+    right: 0,
     padding: theme.spacing(6, 0),
   },
 }));
