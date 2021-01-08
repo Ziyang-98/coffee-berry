@@ -85,6 +85,23 @@ const basePostings = [
     confirmed: [],
     delivered: [],
   },
+  {
+    postingId: 3,
+    username: "James",
+    nameOfProduct: "Kopi Nganu",
+    units: 50,
+    pricePerUnit: 50,
+    image: "https://source.unsplash.com/tvVkydhyspU/1600x900",
+    tags: {
+      beanType: "others",
+      roastLevel: "",
+      organic: true,
+    },
+    description: "Fresh from Indonesia. While stocks last.",
+    pending: [],
+    confirmed: [],
+    delivered: [],
+  },
 ];
 
 class Postings extends Component {
@@ -93,9 +110,17 @@ class Postings extends Component {
 
     this.state = {
       name: props.match.params.name,
-      searchValue: "",
-      postings: basePostings,
+      postings: [],
     };
+  }
+
+  componentDidMount() {
+    let userPostings = basePostings;
+    const inputName = this.state.name.toLowerCase();
+    userPostings = userPostings.filter((posting) =>
+      posting.username.toLowerCase().match(inputName)
+    );
+    this.setState({ postings: userPostings });
   }
 
   render() {

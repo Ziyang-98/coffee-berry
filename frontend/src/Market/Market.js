@@ -18,6 +18,7 @@ import { withStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import FilterButton from "./Filter";
 import ButtonBase from "@material-ui/core/ButtonBase";
+import { withRouter } from "react-router-dom";
 
 const useStyles = (theme) => ({
   icon: {
@@ -94,6 +95,23 @@ const basePostings = [
     confirmed: [],
     delivered: [],
   },
+  {
+    postingId: 3,
+    username: "James",
+    nameOfProduct: "Kopi Nganu",
+    units: 50,
+    pricePerUnit: 50,
+    image: "https://source.unsplash.com/tvVkydhyspU/1600x900",
+    tags: {
+      beanType: "others",
+      roastLevel: "",
+      organic: true,
+    },
+    description: "Fresh from Indonesia. While stocks last.",
+    pending: [],
+    confirmed: [],
+    delivered: [],
+  },
 ];
 
 class Market extends Component {
@@ -154,6 +172,8 @@ class Market extends Component {
 
   render() {
     const { classes } = this.props;
+    const { history } = this.props;
+
     return (
       <React.Fragment>
         <CssBaseline />
@@ -230,7 +250,9 @@ class Market extends Component {
                 <Grid item key={posting.postingId} xs={12} sm={6} md={4}>
                   <ButtonBase
                     className={classes.buttonBase}
-                    onClick={(event) => {}}
+                    onClick={(event) => {
+                      history.push(`/market/${posting.postingId}`);
+                    }}
                   >
                     <Card className={classes.card}>
                       <CardMedia
@@ -267,4 +289,4 @@ class Market extends Component {
   }
 }
 
-export default withStyles(useStyles)(Market);
+export default withStyles(useStyles)(withRouter(Market));
