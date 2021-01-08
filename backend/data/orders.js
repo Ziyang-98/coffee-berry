@@ -13,6 +13,6 @@ var ordersInfo = {
     }
 };
 
-module.exports = function() {
-    return ordersInfo;
-}
+module.exports = function () {
+  return ordersInfo;
+};
