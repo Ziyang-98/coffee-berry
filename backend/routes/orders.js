@@ -38,17 +38,17 @@ function getPostingFromId(postingId) {
   return postings[postingId];
 }
 
-
-function createOrder(id, na, post, ad, amt, stat, d8) {
-    return {
-        orderId: id,
-        name: na,
-        posting: post,
-        address: ad,
-        amount: amt,
-        status: stat,
-        date: d8
-    };
+function createOrder(id, na, post, postingPn, ad, amt, stat, d8) {
+  return {
+    orderId: id,
+    name: na,
+    postingId: post,
+    productName: postingPn,
+    address: ad,
+    amount: amt,
+    status: stat,
+    date: d8,
+  };
 }
 
 // Find list of orders using name
@@ -70,42 +70,85 @@ router.get("/orderWithId/:orderId", function (req, res) {
   res.send(order);
 });
 
+// Adds an order
+router.post("/createOrder", function (req, res) {
+  const { name, postingId, address, amount, status, date } = req.body;
+  const posting = getPostingFromId(postingId);
 
+  if (posting == null) {
+    res.status(500).send();
+  }
 
-// Adds an order 
-router.post('/createOrder', function(req, res) {
-    const {name, postingId, address, amount, status, date} = req.body;
-    const posting = getPostingFromId(postingId);
-    
-    if (posting == null) {
-        res.status(500).send();
-    }
+  // Creates a new order
+  const newOrder = createOrder(
+    orderId,
+    name,
+    postingId,
+    posting.nameOfProduct,
+    address,
+    amount,
+    status,
+    date
+  );
 
-    // Creates a new order
-    const newOrder = createOrder(orderId, name, posting, address, amount, status, date);
-
-    orders[orderId] = newOrder;
-    posting.orders[orderId] = newOrder; // Adds new order to orders for this posting
-    userOrders[name].push(String(orderId));
-    orderId++;
-    res.status(200).send();
+  orders[orderId] = newOrder;
+  //   posting.orders[orderId] = newOrder; // Adds new order to orders for this posting
+  posting.pending.push(newOrder);
+  userOrders[name].push(String(orderId));
+  orderId++;
+  res.status(200).send();
 });
 
 // Update an order
-router.post('/updateOrder/:orderId', function(req, res) {
-    const {name, postingId, address, amount, status, date} = req.body;
-    const posting = getPostingFromId(postingId);
-    
-    if (posting == null) {
-        res.status(500).send();
-    }
+router.post("/updateOrder/:orderId", function (req, res) {
+  const {
+    name,
+    postingId,
+    productName,
+    address,
+    amount,
+    status,
+    date,
+  } = req.body;
+  const posting = getPostingFromId(postingId);
 
-    // Creates a new order
-    const newOrder = createOrder(orderId, name, posting, address, amount, status, date);
-    
-    orders[orderId] = newOrder;
-    posting.orders[orderId] = newOrder; 
-    res.status(200).send();
+  if (posting == null) {
+    res.status(500).send();
+  }
+
+  // Creates a new order
+  const newOrder = createOrder(
+    orderId,
+    name,
+    postingId,
+    posting.nameOfProduct,
+    address,
+    amount,
+    status,
+    date
+  );
+
+  orders[orderId] = newOrder;
+  if (posting.pending.some((order) => orderId === order.orderId)) {
+    posting.pending.filter((order) => orderId === order.orderId);
+  } else if (posting.confirmed.some((order) => orderId === order.orderId)) {
+    posting.confirmed.filter((order) => orderId === order.orderId);
+  } else if (posting.confirmed.some((order) => orderId === order.orderId)) {
+    posting.delivered.filter((order) => orderId === order.orderId);
+  } else {
+    res.status(500).send();
+    return;
+  }
+
+  switch (status) {
+    case "pending":
+      posting.pending.push(order);
+    case "confirmed":
+      posting.confirmed.push(order);
+    case "delivered":
+      posting.pending.push(order);
+  }
+  res.status(200).send();
 });
 
 // Delete an order

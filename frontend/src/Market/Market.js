@@ -19,6 +19,7 @@ import Container from "@material-ui/core/Container";
 import FilterButton from "./Filter";
 import ButtonBase from "@material-ui/core/ButtonBase";
 import { withRouter } from "react-router-dom";
+import axios from "axios";
 
 const useStyles = (theme) => ({
   icon: {
@@ -40,6 +41,7 @@ const useStyles = (theme) => ({
   },
   card: {
     height: "100%",
+    width: theme.spacing(35),
     display: "flex",
     flexDirection: "column",
   },
@@ -60,59 +62,59 @@ const useStyles = (theme) => ({
   },
 });
 
-const basePostings = [
-  {
-    postingId: 1,
-    username: "James",
-    nameOfProduct: "Fresh Arabica Coffee Beans",
-    units: 100,
-    pricePerUnit: 35,
-    image: "https://source.unsplash.com/G88j9KT5u4g/1600x900",
-    tags: {
-      beanType: "arabica",
-      roastLevel: "light",
-      organic: false,
-    },
-    description: "Fresh Arabica Coffee Beans from Brazil.",
-    pending: [],
-    confirmed: [],
-    delivered: [],
-  },
-  {
-    postingId: 2,
-    username: "Oliver",
-    nameOfProduct: "Robusta Beans",
-    units: 120,
-    pricePerUnit: 20,
-    image: "https://source.unsplash.com/PMnJWQ1F_ww/1600x900",
-    tags: {
-      beanType: "robusta",
-      roastLevel: "dark",
-      organic: true,
-    },
-    description: "These beans were freshly harvested in India. 100% Organic",
-    pending: [],
-    confirmed: [],
-    delivered: [],
-  },
-  {
-    postingId: 3,
-    username: "James",
-    nameOfProduct: "Kopi Nganu",
-    units: 50,
-    pricePerUnit: 50,
-    image: "https://source.unsplash.com/tvVkydhyspU/1600x900",
-    tags: {
-      beanType: "others",
-      roastLevel: "",
-      organic: true,
-    },
-    description: "Fresh from Indonesia. While stocks last.",
-    pending: [],
-    confirmed: [],
-    delivered: [],
-  },
-];
+// const basePostings = [
+//   {
+//     postingId: 1,
+//     username: "James",
+//     nameOfProduct: "Fresh Arabica Coffee Beans",
+//     units: 100,
+//     pricePerUnit: 35,
+//     image: "https://source.unsplash.com/G88j9KT5u4g/1600x900",
+//     tags: {
+//       beanType: "arabica",
+//       roastLevel: "light",
+//       organic: false,
+//     },
+//     description: "Fresh Arabica Coffee Beans from Brazil.",
+//     pending: [],
+//     confirmed: [],
+//     delivered: [],
+//   },
+//   {
+//     postingId: 2,
+//     username: "Oliver",
+//     nameOfProduct: "Robusta Beans",
+//     units: 120,
+//     pricePerUnit: 20,
+//     image: "https://source.unsplash.com/PMnJWQ1F_ww/1600x900",
+//     tags: {
+//       beanType: "robusta",
+//       roastLevel: "dark",
+//       organic: true,
+//     },
+//     description: "These beans were freshly harvested in India. 100% Organic",
+//     pending: [],
+//     confirmed: [],
+//     delivered: [],
+//   },
+//   {
+//     postingId: 3,
+//     username: "James",
+//     nameOfProduct: "Kopi Nganu",
+//     units: 50,
+//     pricePerUnit: 50,
+//     image: "https://source.unsplash.com/tvVkydhyspU/1600x900",
+//     tags: {
+//       beanType: "others",
+//       roastLevel: "",
+//       organic: true,
+//     },
+//     description: "Fresh from Indonesia. While stocks last.",
+//     pending: [],
+//     confirmed: [],
+//     delivered: [],
+//   },
+// ];
 
 class Market extends Component {
   constructor(props) {
@@ -120,14 +122,25 @@ class Market extends Component {
 
     this.state = {
       searchValue: "",
-      postings: basePostings,
+      basePostings: [],
+      postings: [],
     };
     this.filter = this.filter.bind(this);
     this.reset = this.reset.bind(this);
   }
 
+  async componentDidMount() {
+    const basePostings = await axios.get(
+      `http://localhost:9000/postings/allPostings`
+    );
+    this.setState({
+      basePostings: Object.values(basePostings.data),
+      postings: Object.values(basePostings.data),
+    });
+  }
+
   filter(beanType, roastLevel, isOrganic) {
-    let filteredPostings = [...basePostings];
+    let filteredPostings = [...this.state.basePostings];
     const tagsToFilter = [];
     if (beanType) {
       tagsToFilter.push(beanType);
@@ -141,7 +154,7 @@ class Market extends Component {
       tagsToFilter.push(isOrganic);
     }
 
-    console.log(tagsToFilter, "Before filter");
+    // console.log(tagsToFilter, "Before filter");
     for (let tag of tagsToFilter) {
       filteredPostings = filteredPostings.filter((posting) => {
         return Object.values(posting.tags).includes(tag);
@@ -155,11 +168,11 @@ class Market extends Component {
   }
 
   reset() {
-    this.setState({ postings: basePostings });
+    this.setState({ postings: this.state.basePostings });
   }
 
   submit(value) {
-    let filteredPostings = [...basePostings];
+    let filteredPostings = [...this.state.basePostings];
     filteredPostings = filteredPostings.filter((posting) => {
       return posting.nameOfProduct.toLowerCase().includes(value.toLowerCase());
     });

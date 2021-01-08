@@ -3,65 +3,11 @@ import { withStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
-// import CardMedia from "@material-ui/core/CardMedia";
 import Typography from "@material-ui/core/Typography";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import Divider from "@material-ui/core/Divider";
 import OrderButton from "./OrderButton";
-
-const basePostings = [
-  {
-    postingId: 1,
-    username: "James",
-    nameOfProduct: "Fresh Arabica Coffee Beans",
-    units: 100,
-    pricePerUnit: 35,
-    image: "https://source.unsplash.com/G88j9KT5u4g/1600x900",
-    tags: {
-      beanType: "arabica",
-      roastLevel: "light",
-      organic: false,
-    },
-    description: "Fresh Arabica Coffee Beans from Brazil.",
-    pending: [],
-    confirmed: [],
-    delivered: [],
-  },
-  {
-    postingId: 2,
-    username: "Oliver",
-    nameOfProduct: "Robusta Beans",
-    units: 120,
-    pricePerUnit: 20,
-    image: "https://source.unsplash.com/PMnJWQ1F_ww/1600x900",
-    tags: {
-      beanType: "robusta",
-      roastLevel: "dark",
-      organic: true,
-    },
-    description: "These beans were freshly harvested in India. 100% Organic",
-    pending: [],
-    confirmed: [],
-    delivered: [],
-  },
-  {
-    postingId: 3,
-    username: "James",
-    nameOfProduct: "Kopi Nganu",
-    units: 50,
-    pricePerUnit: 50,
-    image: "https://source.unsplash.com/tvVkydhyspU/1600x900",
-    tags: {
-      beanType: "others",
-      roastLevel: "",
-      organic: true,
-    },
-    description: "Fresh from Indonesia. While stocks last.",
-    pending: [],
-    confirmed: [],
-    delivered: [],
-  },
-];
+import axios from "axios";
 
 const useStyles = (theme) => ({
   root: {
@@ -127,20 +73,23 @@ class Posting extends Component {
 
     this.state = {
       postingId: props.match.params.postingId,
-      posting: basePostings.find((posting) =>
-        String(posting.postingId).match(props.match.params.postingId)
-      ),
+      posting: {},
+      tagString: "",
+      imageLoaded: false,
+      // basePostings.find((posting) =>
+      //   String(posting.postingId).match(props.match.params.postingId)
+      // ),
     };
   }
 
-  postOrder(posting, name, address, units) {
-    console.log(posting, name, address, units);
-  }
-
-  render() {
-    const posting = this.state.posting;
-    const { classes } = this.props;
+  async componentDidMount() {
+    let posting = await axios.get(
+      `http://localhost:9000/postings/postingWithId/${this.state.postingId}`
+    );
+    posting = posting.data;
+    console.log(posting);
     let tagString = "";
+
     if (posting.tags.beanType) {
       tagString = tagString.concat(posting.tags.beanType + ", ");
     }
@@ -156,6 +105,30 @@ class Posting extends Component {
     if (tagString.endsWith(", ")) {
       tagString = tagString.slice(0, -2);
     }
+
+    this.setState({
+      posting: posting,
+      tagString: tagString,
+    });
+  }
+
+  async postOrder(posting, name, address, image, units) {
+    posting.units = posting.units - units;
+    this.setState({ posting: posting });
+    await axios.post(
+      `http://localhost:9000/postings/postingWithId/${this.state.postingId}`
+    );
+    console.log("Posted order");
+  }
+
+  handleImageLoaded() {
+    this.setState({ imageLoaded: true });
+  }
+
+  render() {
+    const posting = this.state.posting;
+    const { classes } = this.props;
+
     return (
       <React.Fragment>
         <CssBaseline />
@@ -167,6 +140,7 @@ class Posting extends Component {
                 style={{ display: posting.image }}
                 src={posting.image}
                 alt=""
+                onLoad={this.handleImageLoaded.bind(this)}
               />
             </div>
             <CardContent className={classes.content}>
@@ -178,7 +152,7 @@ class Posting extends Component {
                   Posted by {posting.username}
                 </Typography>
                 <Typography variant="subtitle1" color="textSecondary">
-                  Tags: {tagString}
+                  Tags: {this.state.tagString}
                 </Typography>
                 <Divider />
                 <div>

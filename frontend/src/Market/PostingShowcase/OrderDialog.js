@@ -39,6 +39,8 @@ export default function OrderDialog({ posting, open, handleClose, postOrder }) {
   const [name, setName] = React.useState("");
   const [address, setAddress] = React.useState("");
   const [units, setUnits] = React.useState(0);
+  const [image, setImage] = React.useState("");
+
   const handleSliderChange = (event, newValue) => {
     setUnits(newValue);
   };
@@ -58,9 +60,10 @@ export default function OrderDialog({ posting, open, handleClose, postOrder }) {
 
     if (!(name === "" || address === "" || units === 0)) {
       console.log("All details are present");
-      postOrder(posting, name, address, units);
+      postOrder(posting, name, address, image, units);
       setName("");
       setAddress("");
+      setImage("");
       setUnits(0);
       handleClose();
     }
@@ -118,14 +121,16 @@ export default function OrderDialog({ posting, open, handleClose, postOrder }) {
         <DialogTitle id="form-dialog-title">Order Form</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            Please enter your name, address and number of units that you would
-            like to order.
+            Please enter your name, address, the link of your product image and
+            number of units that you would like to order. Take note that if the
+            image link is invalid or corrupted, your posting won't have any
+            image displayed!
           </DialogContentText>
           <TextField
             autoFocus
             margin="dense"
             id="name"
-            label="Name"
+            label="*Name"
             type="name"
             fullWidth
             onChange={(e) => setName(e.target.value)}
@@ -134,13 +139,22 @@ export default function OrderDialog({ posting, open, handleClose, postOrder }) {
             autoFocus
             margin="dense"
             id="address"
-            label="Address"
+            label="*Address"
             type="address"
             fullWidth
             onChange={(e) => setAddress(e.target.value)}
           />
+          <TextField
+            autoFocus
+            margin="dense"
+            id="imageLink"
+            label="Link of your product"
+            type="imageLink"
+            fullWidth
+            onChange={(e) => setImage(e.target.value)}
+          />
           <div className={classes.unitsForm}>
-            <Typography color="textSecondary">Units (In KG)</Typography>
+            <Typography color="textSecondary">*Units (In KG)</Typography>
             <div className={classes.sliderHolder}>
               <Slider
                 className={classes.slider}

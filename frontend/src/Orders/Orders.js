@@ -56,15 +56,29 @@ export default function Dashboard(props) {
         );
         setOrders(orders.data);
 
-        const rows = orders.data.map((order) => {
-          return createData(
+        // let rows = [];
+        // for (let order in orders.data) {
+        //   const posting = await axios.get(
+        //     `http://localhost:9000/postings//postingWithId/${order.postingId}`
+        //   );
+        //   const row = createData(
+        //     order.orderId,
+        //     order.date,
+        //     posting.productName,
+        //     order.amount,
+        //     order.status
+        //   );
+        //   rows.push(row);
+        // }
+        const rows = orders.data.map((order) =>
+          createData(
             order.orderId,
             order.date,
             order.productName,
             order.amount,
             order.status
-          );
-        });
+          )
+        );
         setRows(rows);
         setMounted(true);
       }
