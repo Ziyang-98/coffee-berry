@@ -1,25 +1,43 @@
-import logo from "./logo.svg";
+import React, { Component } from "react";
+import { Route, withRouter } from "react-router-dom";
 import "./App.css";
+import Header from "./Header/Header";
+import Home from "./Home/Home";
+import Market from "./Market/Market";
+import Orders from "./Orders/Orders";
+import Postings from "./Postings/Postings";
+import Footer from "./Footer/Footer";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+const sections = [
+  { title: "Home", url: "/" },
+  { title: "Market", url: "/market" },
+  { title: "Your Orders", url: "/orders" },
+  { title: "Your Postings", url: "/postings" },
+];
+
+class App extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      currentRoute: "/",
+    };
+  }
+
+  render() {
+    return (
+      <div>
+        <Header title="Coffeeberry" sections={sections} />
+        <Route exact path="/" component={Home} />
+        <Route path="/market" component={Market} />
+        <Route path="/orders" component={Orders} />
+        <Route path="/postings" component={Postings} />
+        <Footer
+          title="Footer"
+          description="Something here to give the footer a purpose!"
+        />
+      </div>
+    );
+  }
 }
 
-export default App;
+export default withRouter(App);
