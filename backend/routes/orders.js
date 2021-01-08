@@ -13,10 +13,10 @@ router.get('/', function(req, res) {
 });
 
 // Find an order
-router.get('/:id', function(req, res) {
+router.get('/:orderId', function(req, res) {
     var found;
     orders.forEach(order => {
-        if (order.id == req.params.id) {
+        if (order.id == req.params.orderId) {
             found = order; 
         }
     });
@@ -28,9 +28,10 @@ router.get('/:id', function(req, res) {
 
 // Adds an order to orders
 router.post('/order', function(req, res) {
-    const {id, address, amount, status} = req.body;
+    const {orderId, postingId, address, amount, status} = req.body;
     const newOrder = {
-        id,
+        orderId,
+        postingId,
         address,
         amount,
         status
@@ -40,16 +41,17 @@ router.post('/order', function(req, res) {
 });
 
 // Update an order
-router.post('/update/:id', function(req, res) {
-    const {id, address, amount, status} = req.body;
+router.post('/update/:orderId', function(req, res) {
+    const {orderId, postingId, address, amount, status} = req.body;
     const newOrder = {
-        id,
+        orderId,
+        postingId,
         address,
         amount,
         status
     }
     var index;
-    index = orders.findIndex(order => order.id == id);
+    index = orders.findIndex(order => order.orderId == orderId);
     if (index == -1) {
         res.status(500).send();
     }
@@ -58,9 +60,9 @@ router.post('/update/:id', function(req, res) {
 });
 
 // Delete an order
-router.post('/delete/:id', function(req, res) {
+router.post('/delete/:orderId', function(req, res) {
     var index;
-    index = orders.findIndex(order => order.id == req.params.id);
+    index = orders.findIndex(order => order.orderId == req.params.orderId);
     if (index == -1) {
         res.status(500).send();
     }
