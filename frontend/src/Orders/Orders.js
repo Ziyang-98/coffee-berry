@@ -7,6 +7,7 @@ import Container from "@material-ui/core/Container";
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
 import Orders from "./OrderList";
+import axios from "axios";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -42,16 +43,44 @@ function createData(id, date, productName, amount, status) {
 
 export default function Dashboard(props) {
   const classes = useStyles();
-
+  const [orders, setOrders] = React.useState([]);
+  const [mounted, setMounted] = React.useState(false);
+  const [rows, setRows] = React.useState([]);
   const name = props.match.params.name;
 
-  const rows = [
-    createData(0, "16 Mar, 2019", "Arabica Beans", "40", "Pending"),
-    createData(1, "16 Mar, 2019", "Excelsa Beans", "20", "Pending"),
-    createData(2, "16 Mar, 2019", "Robusta beans", "25.5", "Confirmed"),
-    createData(3, "16 Mar, 2019", "Liberica beans", "15", "Confirmed"),
-    createData(4, "15 Mar, 2019", "Cat Poo Beans", "100", "Delivered"),
-  ];
+  const fn = () => {
+    async function fetchData() {
+      if (!mounted) {
+        const orders = await axios.get(
+          `http://localhost:9000/orders/ordersWithName/${name}`
+        );
+        setOrders(orders.data);
+
+        const rows = orders.data.map((order) => {
+          return createData(
+            order.orderId,
+            order.date,
+            order.productName,
+            order.amount,
+            order.status
+          );
+        });
+        setRows(rows);
+        setMounted(true);
+      }
+    }
+    fetchData();
+  };
+
+  React.useEffect(fn, []);
+
+  // const rows = [
+  //   createData(0, "16 Mar, 2019", "Arabica Beans", "40", "Pending"),
+  //   createData(1, "16 Mar, 2019", "Excelsa Beans", "20", "Pending"),
+  //   createData(2, "16 Mar, 2019", "Robusta beans", "25.5", "Confirmed"),
+  //   createData(3, "16 Mar, 2019", "Liberica beans", "15", "Confirmed"),
+  //   createData(4, "15 Mar, 2019", "Cat Poo Beans", "100", "Delivered"),
+  // ];
 
   return (
     <div className={classes.root}>
