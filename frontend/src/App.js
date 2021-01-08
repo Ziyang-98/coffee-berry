@@ -3,13 +3,16 @@ import { Route, withRouter } from "react-router-dom";
 import "./App.css";
 import Header from "./Header/Header";
 import Home from "./Home/Home";
+import Market from "./Market/Market";
+import Orders from "./Orders/Orders";
+import Postings from "./Postings/Postings";
 import Footer from "./Footer/Footer";
 
 const sections = [
-  { title: "Home", url: "#" },
-  { title: "Market", url: "#" },
-  { title: "Your Orders", url: "#" },
-  { title: "Your Postings", url: "#" },
+  { title: "Home", url: "/" },
+  { title: "Market", url: "/market" },
+  { title: "Your Orders", url: "/orders" },
+  { title: "Your Postings", url: "/postings" },
 ];
 
 class App extends Component {
@@ -24,7 +27,10 @@ class App extends Component {
     return (
       <div>
         <Header title="Coffeeberry" sections={sections} />
-        <Route path="/" component={Home} />
+        <Route exact path="/" component={Home} />
+        <Route path="/market" component={Market} />
+        <Route path="/orders" component={Orders} />
+        <Route path="/postings" component={Postings} />
         <Footer
           title="Footer"
           description="Something here to give the footer a purpose!"
