@@ -40,8 +40,9 @@ function getPostingFromId(postingId) {
     return postings[postingId];
 }
 
-function createPosting(na, ppu, u, t, nop, desc, dp) {
+function createPosting(id, na, ppu, u, t, nop, desc, dp) {
     return {
+        postingId: id,
         name: na,
         pricePerUnit, ppu,
         unit: u,
@@ -80,7 +81,7 @@ router.post('/createPosting', function(req, res) {
     const {name, pricePerUnit, unit, tags, nameOfProduct, description, displayPhotos} = req.body;
 
     // Creates a new posting
-    const newPosting = createPosting(name, pricePerUnit, unit, tags, nameOfProduct, description, displayPhotos);
+    const newPosting = createPosting(postingId, name, pricePerUnit, unit, tags, nameOfProduct, description, displayPhotos);
 
     postings[postingId] = newPosting;
     postingId++;
@@ -97,7 +98,7 @@ router.post('/updatePosting/:postingId', function(req, res) {
     }
 
     // Creates a new order
-    const newPosting = createPosting(name, pricePerUnit, unit, tags, nameOfProduct, description, displayPhotos);
+    const newPosting = createPosting(postingId, name, pricePerUnit, unit, tags, nameOfProduct, description, displayPhotos);
     
     postings[postingId] = newPosting;
     res.status(200).send();

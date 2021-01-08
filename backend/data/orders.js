@@ -3,6 +3,7 @@ var ordersInfo = {
     orders: { 
         1: [
             {
+                orderId: 1,
                 name: "bob", 
                 postingId: 1, 
                 address: "NUS", 

@@ -38,8 +38,9 @@ function getPostingFromId(postingId) {
     return postings[postingId];
 }
 
-function createOrder(na, pId, ad, amt, stat, d8) {
+function createOrder(id, na, pId, ad, amt, stat, d8) {
     return {
+        orderId: id,
         name: na,
         postingId, pId,
         address: ad,
@@ -77,10 +78,11 @@ router.post('/createOrder', function(req, res) {
     }
 
     // Creates a new order
-    const newOrder = createOrder(name, postingId, address, amount, status, date);
+    const newOrder = createOrder(orderId, name, postingId, address, amount, status, date);
 
     orders[orderId] = newOrder;
     posting.orders[orderId] = newOrder; // Adds new order to orders for this posting
+    userOrders[name].push(String(orderId));
     orderId++;
     res.status(200).send();
 });
@@ -95,7 +97,7 @@ router.post('/updateOrder/:orderId', function(req, res) {
     }
 
     // Creates a new order
-    const newOrder = createOrder(req.params.orderId, postingId, address, amount, status, date);
+    const newOrder = createOrder(orderId, name, postingId, address, amount, status, date);
     
     orders[orderId] = newOrder;
     posting.orders[orderId] = newOrder; 
@@ -104,7 +106,7 @@ router.post('/updateOrder/:orderId', function(req, res) {
 
 // Delete an order
 router.post('/deleteOrder/:orderId', function(req, res) {
-    const {postingId} = req.body;
+    const {name, postingId} = req.body;
     const posting = getPostingFromId(postingId);
 
     if (posting == null) {
@@ -112,6 +114,13 @@ router.post('/deleteOrder/:orderId', function(req, res) {
     }
 
     delete orders[orderId];
+
+    var idString = String(orderId);
+    var index = userOrders[name].findIndex(id => orderId == id);
+    if (index != -1) {
+        delete userOrders[name][index];
+    }
+
     delete posting.orders[orderId];
     res.status(200).send();
 });
