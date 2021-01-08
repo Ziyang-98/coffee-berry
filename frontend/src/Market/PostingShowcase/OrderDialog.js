@@ -60,6 +60,7 @@ export default function OrderDialog({ posting, open, handleClose, postOrder }) {
     if (!(name === "" || address === "" || units === 0)) {
       console.log("All details are present");
       postOrder(posting, name, address, units);
+      setSubmitted(true);
       setName("");
       setAddress("");
       setUnits(0);
@@ -70,7 +71,7 @@ export default function OrderDialog({ posting, open, handleClose, postOrder }) {
   const [noName, setNoName] = React.useState(false);
   const [noAddress, setNoAddress] = React.useState(false);
   const [noUnits, setNoUnits] = React.useState(false);
-
+  const [submitted, setSubmitted] = React.useState(false);
   /*----Handle Alerts----*/
   const handleNoName = () => {
     setNoName(true);
@@ -85,6 +86,7 @@ export default function OrderDialog({ posting, open, handleClose, postOrder }) {
   };
 
   const handleAlertClose = () => {
+    setSubmitted(false);
     setNoName(false);
     setNoAddress(false);
     setNoUnits(false);
@@ -120,28 +122,31 @@ export default function OrderDialog({ posting, open, handleClose, postOrder }) {
         <DialogContent>
           <DialogContentText>
             Please enter your name, address, the link of your product image and
-            number of units that you would like to order.
+            number of units that you would like to order. Remember your name so
+            that you can track your orders in "Your Orders" page!
           </DialogContentText>
           <TextField
+            required
             autoFocus
             margin="dense"
             id="name"
-            label="*Name"
+            label="Name"
             type="name"
             fullWidth
             onChange={(e) => setName(e.target.value)}
           />
           <TextField
+            required
             autoFocus
             margin="dense"
             id="address"
-            label="*Address"
+            label="Address"
             type="address"
             fullWidth
             onChange={(e) => setAddress(e.target.value)}
           />
           <div className={classes.unitsForm}>
-            <Typography color="textSecondary">*Units (In KG)</Typography>
+            <Typography color="textSecondary">Units (In KG) *</Typography>
             <div className={classes.sliderHolder}>
               <Slider
                 className={classes.slider}
@@ -170,6 +175,19 @@ export default function OrderDialog({ posting, open, handleClose, postOrder }) {
           </Button>
         </DialogActions>
       </Dialog>
+      <Snackbar
+        open={submitted}
+        autoHideDuration={3000}
+        onClose={handleAlertClose}
+      >
+        <Alert
+          className={classes.alert}
+          onClose={handleAlertClose}
+          severity="success"
+        >
+          The order has been confirmed!
+        </Alert>
+      </Snackbar>
       <Snackbar
         open={noName || noAddress || noUnits}
         autoHideDuration={3000}

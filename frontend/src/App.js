@@ -9,6 +9,8 @@ import OrderForm from "./Orders/Form";
 import Orders from "./Orders/Orders";
 import PostingForm from "./Postings/Form";
 import Postings from "./Postings/Postings";
+import CreatePosting from "./CreatePosting/CreatePosting";
+import Success from "./CreatePosting/Success";
 import Footer from "./Footer/Footer";
 
 const sections = [
@@ -16,6 +18,7 @@ const sections = [
   { title: "Market", url: "/market" },
   { title: "Your Orders", url: "/orders" },
   { title: "Your Postings", url: "/postings" },
+  { title: "Create Posting", url: "/create_posting" },
 ];
 
 class App extends Component {
@@ -37,6 +40,9 @@ class App extends Component {
         <Route path="/orders/:name" component={Orders} />
         <Route exact path="/postings" component={PostingForm} />
         <Route path="/postings/:name" component={Postings} />
+        <Route exact path="/create_posting" component={CreatePosting} />
+        <Route path="/create_posting/successful-upload" component={Success} />
+
         <Footer
           title="Footer"
           description="Something here to give the footer a purpose!"

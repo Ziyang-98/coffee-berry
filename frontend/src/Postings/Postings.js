@@ -74,10 +74,6 @@ class Postings extends Component {
       `http://localhost:9000/postings//postingsWithName/${this.state.name}`
     );
     console.log(userPostings.data);
-    // const inputName = this.state.name.toLowerCase();
-    // userPostings = userPostings.filter((posting) =>
-    //   posting.username.toLowerCase().match(inputName)
-    // );
     this.setState({ postings: userPostings.data });
   }
 

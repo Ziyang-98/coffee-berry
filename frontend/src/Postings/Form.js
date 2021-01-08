@@ -1,4 +1,5 @@
 import React from "react";
+import CssBaseline from "@material-ui/core/CssBaseline";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import clsx from "clsx";
@@ -73,6 +74,7 @@ export default function Dashboard() {
 
   return (
     <div className={classes.form}>
+      <CssBaseline />
       <Typography
         component="h4"
         variant="h3"
