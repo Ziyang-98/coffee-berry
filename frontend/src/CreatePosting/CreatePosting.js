@@ -13,6 +13,7 @@ import Select from "@material-ui/core/Select";
 import Snackbar from "@material-ui/core/Snackbar";
 import MuiAlert from "@material-ui/lab/Alert";
 import { useHistory } from "react-router-dom";
+import axios from "axios";
 
 const useStyles = makeStyles((theme) => ({
   layout: {
@@ -64,24 +65,24 @@ function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
 }
 
-function submitPosting(
+async function submitPosting(
   name,
   pricePerUnit,
-  unit,
+  units,
   tags,
   nameOfProduct,
   description,
   image
 ) {
-  console.log(
-    name,
-    pricePerUnit,
-    unit,
-    tags,
-    nameOfProduct,
-    description,
-    image
-  );
+  await axios.post(`http://localhost:9000/postings/createPosting`, {
+    name: name,
+    pricePerUnit: pricePerUnit,
+    units: units,
+    tags: tags,
+    nameOfProduct: nameOfProduct,
+    description: description,
+    image: image,
+  });
 }
 
 export default function Checkout() {
@@ -104,7 +105,7 @@ export default function Checkout() {
   const [noPricePerUnit, setNoPricePerUnit] = React.useState(false);
   const [noUnits, setNoUnits] = React.useState(false);
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     let error = false;
     if (name === "") {
       setNoName(true);
@@ -136,7 +137,7 @@ export default function Checkout() {
     }
 
     const isOrganic = organic.match("yes");
-    submitPosting(
+    await submitPosting(
       name,
       pricePerUnit,
       units,

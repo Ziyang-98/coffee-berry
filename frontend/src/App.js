@@ -40,6 +40,7 @@ class App extends Component {
         <Route path="/orders/:name" component={Orders} />
         <Route exact path="/postings" component={PostingForm} />
         <Route path="/postings/:name" component={Postings} />
+        {/* <Route path= "/postings/:name/:postingId" component={ManagePosting} /> */}
         <Route exact path="/create_posting" component={CreatePosting} />
         <Route path="/create_posting/successful-upload" component={Success} />
 

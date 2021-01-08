@@ -45,7 +45,7 @@ function createPosting(id, na, ppu, u, t, nop, desc, dp, p, c, d) {
     postingId: id,
     name: na,
     pricePerUnit: ppu,
-    unit: u,
+    units: u,
     tags: t,
     nameOfProduct: nop,
     description: desc,
@@ -86,7 +86,7 @@ router.post("/createPosting", function (req, res) {
   const {
     name,
     pricePerUnit,
-    unit,
+    units,
     tags,
     nameOfProduct,
     description,
@@ -98,7 +98,7 @@ router.post("/createPosting", function (req, res) {
     postingId,
     name,
     pricePerUnit,
-    unit,
+    units,
     tags,
     nameOfProduct,
     description,
@@ -107,8 +107,15 @@ router.post("/createPosting", function (req, res) {
     [],
     []
   );
-
+  console.log(newPosting);
   postings[postingId] = newPosting;
+  if (userPostings.hasOwnProperty(name)) {
+    userPostings[name].push(postingId);
+  } else {
+    console.log("no user");
+    userPostings[name] = [postingId];
+  }
+  console.log(userPostings);
   postingId++;
   res.status(200).send();
 });
@@ -118,7 +125,7 @@ router.post("/updatePosting/:postingId", function (req, res) {
   const {
     name,
     pricePerUnit,
-    unit,
+    units,
     tags,
     nameOfProduct,
     description,
@@ -138,7 +145,7 @@ router.post("/updatePosting/:postingId", function (req, res) {
     postingId,
     name,
     pricePerUnit,
-    unit,
+    units,
     tags,
     nameOfProduct,
     description,

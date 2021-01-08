@@ -94,7 +94,11 @@ router.post("/createOrder", function (req, res) {
   //   posting.orders[orderId] = newOrder; // Adds new order to orders for this posting
   posting.pending.push(newOrder);
   posting.units = posting.units - amount;
-  userOrders[name].push(String(orderId));
+  if (userOrders.hasOwnProperty(name)) {
+    userOrders[name].push(orderId);
+  } else {
+    userOrders[name] = [orderId];
+  }
   orderId++;
   res.status(200).send();
 });
