@@ -11,11 +11,17 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: theme.palette.grey[800],
     color: theme.palette.common.white,
     margin: theme.spacing(5, 0),
-    height: theme.spacing(60),
+    height: theme.spacing(75),
     backgroundImage: "url(https://source.unsplash.com/random)",
     backgroundSize: "cover",
     backgroundRepeat: "no-repeat",
     backgroundPosition: "center",
+    [theme.breakpoints.down("md")]: {
+      height: theme.spacing(45),
+    },
+    [theme.breakpoints.down("xs")]: {
+      height: theme.spacing(45),
+    },
   },
   overlay: {
     position: "absolute",
