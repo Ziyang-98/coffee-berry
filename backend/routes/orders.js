@@ -1,70 +1,127 @@
 var express = require('express');
 var router = express.Router();
 
-// define the Express app
-const app = express();
-
 // the database
-const orders = [];
+var ordersInfo = require('./../data/orders')();
+var orders = ordersInfo.orders;
+var orderId = ordersInfo.id;
 
-/* GET all orders. */
-router.get('/', function(req, res) {
-    res.send(orders);
+var postingsInfo = require('./../data/postings')();
+var postings = postingsInfo.postings;
+
+// {Name : [_id]} pairs
+var userMappings = require('./../data/users')();
+var userOrders = userMappings.orders;
+
+function getOrderFromId(orderId) {
+    // Given name does not exist
+    if (!(orderId in orders)) {
+        return null;
+    }
+
+    return orders[orderId];
+}
+
+function getOrdersFromName(name) {
+    if (!(name in userOrders)) {
+        return null;
+    } 
+
+    return userOrders[name];
+}
+
+function getPostingFromId(postingId) {
+    if (!(postingId in postings)) {
+        return null;
+    }
+
+    return postings[postingId];
+}
+
+function createOrder(id, na, pId, ad, amt, stat, d8) {
+    return {
+        orderId: id,
+        name: na,
+        postingId, pId,
+        address: ad,
+        amount: amt,
+        status: stat,
+        date: d8
+    };
+}
+
+// Find list of orders using name
+router.get('/ordersWithName/:name', function(req, res) {
+    var listOfOrderIndexes = getOrdersFromName(req.params.name);
+    var listOfOrders = [];
+    
+    listOfOrderIndexes.forEach(index => listOfOrders.push(orders[index]));
+    res.send(listOfOrders);
 });
 
-// Find an order
-router.get('/:id', function(req, res) {
-    var found;
-    orders.forEach(order => {
-        if (order.id == req.params.id) {
-            found = order; 
-        }
-    });
-    if (found == null) {
+// Find order using id
+router.get('/orderWithId/:orderId', function(req, res) {
+    var order = getOrderFromId(req.params.orderId);
+    if (order == null) {
         res.status(500).send();
     }
-    res.send(found);
+    res.send(order);
 });
 
-// Adds an order to orders
-router.post('/order', function(req, res) {
-    const {id, address, amount, status} = req.body;
-    const newOrder = {
-        id,
-        address,
-        amount,
-        status
+// Adds an order 
+router.post('/createOrder', function(req, res) {
+    const {name, postingId, address, amount, status, date} = req.body;
+    const posting = getPostingFromId(postingId);
+    
+    if (posting == null) {
+        res.status(500).send();
     }
-    orders.push(newOrder);
+
+    // Creates a new order
+    const newOrder = createOrder(orderId, name, postingId, address, amount, status, date);
+
+    orders[orderId] = newOrder;
+    posting.orders[orderId] = newOrder; // Adds new order to orders for this posting
+    userOrders[name].push(String(orderId));
+    orderId++;
     res.status(200).send();
 });
 
 // Update an order
-router.post('/update/:id', function(req, res) {
-    const {id, address, amount, status} = req.body;
-    const newOrder = {
-        id,
-        address,
-        amount,
-        status
-    }
-    var index;
-    index = orders.findIndex(order => order.id == id);
-    if (index == -1) {
+router.post('/updateOrder/:orderId', function(req, res) {
+    const {name, postingId, address, amount, status, date} = req.body;
+    const posting = getPostingFromId(postingId);
+    
+    if (posting == null) {
         res.status(500).send();
     }
-    orders[index] = newOrder;
+
+    // Creates a new order
+    const newOrder = createOrder(orderId, name, postingId, address, amount, status, date);
+    
+    orders[orderId] = newOrder;
+    posting.orders[orderId] = newOrder; 
     res.status(200).send();
 });
 
 // Delete an order
-router.post('/delete/:id', function(req, res) {
-    var index;
-    index = orders.findIndex(order => order.id == req.params.id);
-    if (index == -1) {
+router.post('/deleteOrder/:orderId', function(req, res) {
+    const {name, postingId} = req.body;
+    const posting = getPostingFromId(postingId);
+
+    if (posting == null) {
         res.status(500).send();
     }
-    orders.splice(index, 1);
+
+    delete orders[orderId];
+
+    var idString = String(orderId);
+    var index = userOrders[name].findIndex(id => orderId == id);
+    if (index != -1) {
+        delete userOrders[name][index];
+    }
+
+    delete posting.orders[orderId];
     res.status(200).send();
 });
 
