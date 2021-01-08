@@ -38,11 +38,11 @@ function getPostingFromId(postingId) {
     return postings[postingId];
 }
 
-function createOrder(id, na, pId, ad, amt, stat, d8) {
+function createOrder(id, na, post, ad, amt, stat, d8) {
     return {
         orderId: id,
         name: na,
-        postingId, pId,
+        posting: post,
         address: ad,
         amount: amt,
         status: stat,
@@ -78,7 +78,7 @@ router.post('/createOrder', function(req, res) {
     }
 
     // Creates a new order
-    const newOrder = createOrder(orderId, name, postingId, address, amount, status, date);
+    const newOrder = createOrder(orderId, name, posting, address, amount, status, date);
 
     orders[orderId] = newOrder;
     posting.orders[orderId] = newOrder; // Adds new order to orders for this posting
@@ -97,7 +97,7 @@ router.post('/updateOrder/:orderId', function(req, res) {
     }
 
     // Creates a new order
-    const newOrder = createOrder(orderId, name, postingId, address, amount, status, date);
+    const newOrder = createOrder(orderId, name, posting, address, amount, status, date);
     
     orders[orderId] = newOrder;
     posting.orders[orderId] = newOrder; 
