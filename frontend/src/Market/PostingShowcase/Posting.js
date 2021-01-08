@@ -112,12 +112,21 @@ class Posting extends Component {
     });
   }
 
-  async postOrder(posting, name, address, image, units) {
+  async postOrder(posting, name, address, units) {
     posting.units = posting.units - units;
     this.setState({ posting: posting });
-    await axios.post(
-      `http://localhost:9000/postings/postingWithId/${this.state.postingId}`
-    );
+    const date = new Date();
+    const dateString =
+      date.getDate() + "/" + (date.getMonth() + 1) + "/" + date.getFullYear();
+    console.log(dateString);
+    await axios.post(`http://localhost:9000/orders/createOrder`, {
+      name: name,
+      postingId: posting.postingId,
+      address: address,
+      amount: units,
+      status: "pending",
+      date: dateString,
+    });
     console.log("Posted order");
   }
 

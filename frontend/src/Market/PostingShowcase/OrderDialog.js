@@ -39,7 +39,6 @@ export default function OrderDialog({ posting, open, handleClose, postOrder }) {
   const [name, setName] = React.useState("");
   const [address, setAddress] = React.useState("");
   const [units, setUnits] = React.useState(0);
-  const [image, setImage] = React.useState("");
 
   const handleSliderChange = (event, newValue) => {
     setUnits(newValue);
@@ -60,10 +59,9 @@ export default function OrderDialog({ posting, open, handleClose, postOrder }) {
 
     if (!(name === "" || address === "" || units === 0)) {
       console.log("All details are present");
-      postOrder(posting, name, address, image, units);
+      postOrder(posting, name, address, units);
       setName("");
       setAddress("");
-      setImage("");
       setUnits(0);
       handleClose();
     }
@@ -95,18 +93,18 @@ export default function OrderDialog({ posting, open, handleClose, postOrder }) {
   const getDisplayLabel = () => {
     if (noName || noAddress || noUnits) {
       return noName && noAddress && noUnits
-        ? "Please enter your name, address and the number of units you would like to purchase."
+        ? "Please enter your name, address and the number of units cannot be 0."
         : noName && noAddress
         ? "Please enter your name and address."
         : noName && noUnits
-        ? "Please enter your name and the number of units you would like to purchase."
+        ? "Please enter your name and the number of units cannot be 0."
         : noName
         ? "Please enter your name."
         : noAddress && noUnits
-        ? "Please enter your address and the number of units you would like to purchase."
+        ? "Please enter your address and the number of units cannot be 0."
         : noAddress
         ? "Please enter your address"
-        : "Please enter the number of units you would like to purchase.";
+        : "The number of units cannot be 0";
     }
   };
 
@@ -122,9 +120,7 @@ export default function OrderDialog({ posting, open, handleClose, postOrder }) {
         <DialogContent>
           <DialogContentText>
             Please enter your name, address, the link of your product image and
-            number of units that you would like to order. Take note that if the
-            image link is invalid or corrupted, your posting won't have any
-            image displayed!
+            number of units that you would like to order.
           </DialogContentText>
           <TextField
             autoFocus
@@ -144,15 +140,6 @@ export default function OrderDialog({ posting, open, handleClose, postOrder }) {
             fullWidth
             onChange={(e) => setAddress(e.target.value)}
           />
-          <TextField
-            autoFocus
-            margin="dense"
-            id="imageLink"
-            label="Link of your product"
-            type="imageLink"
-            fullWidth
-            onChange={(e) => setImage(e.target.value)}
-          />
           <div className={classes.unitsForm}>
             <Typography color="textSecondary">*Units (In KG)</Typography>
             <div className={classes.sliderHolder}>
@@ -167,6 +154,11 @@ export default function OrderDialog({ posting, open, handleClose, postOrder }) {
                 valueLabelDisplay="auto"
               />
             </div>
+          </div>
+          <div>
+            <Typography variant="h5">
+              Total: ${units * posting.pricePerUnit}
+            </Typography>
           </div>
         </DialogContent>
         <DialogActions>

@@ -133,9 +133,14 @@ class Market extends Component {
     const basePostings = await axios.get(
       `http://localhost:9000/postings/allPostings`
     );
+    console.log(basePostings.data);
+    const postings = Object.values(basePostings.data).filter(
+      (posting) => posting.units
+    );
+    console.log(postings);
     this.setState({
-      basePostings: Object.values(basePostings.data),
-      postings: Object.values(basePostings.data),
+      basePostings: postings,
+      postings: postings,
     });
   }
 

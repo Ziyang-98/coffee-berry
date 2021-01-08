@@ -54,22 +54,7 @@ export default function Dashboard(props) {
         const orders = await axios.get(
           `http://localhost:9000/orders/ordersWithName/${name}`
         );
-        setOrders(orders.data);
-
-        // let rows = [];
-        // for (let order in orders.data) {
-        //   const posting = await axios.get(
-        //     `http://localhost:9000/postings//postingWithId/${order.postingId}`
-        //   );
-        //   const row = createData(
-        //     order.orderId,
-        //     order.date,
-        //     posting.productName,
-        //     order.amount,
-        //     order.status
-        //   );
-        //   rows.push(row);
-        // }
+        setOrders(orders.data.reverse());
         const rows = orders.data.map((order) =>
           createData(
             order.orderId,

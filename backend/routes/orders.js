@@ -74,7 +74,6 @@ router.get("/orderWithId/:orderId", function (req, res) {
 router.post("/createOrder", function (req, res) {
   const { name, postingId, address, amount, status, date } = req.body;
   const posting = getPostingFromId(postingId);
-
   if (posting == null) {
     res.status(500).send();
   }
@@ -94,6 +93,7 @@ router.post("/createOrder", function (req, res) {
   orders[orderId] = newOrder;
   //   posting.orders[orderId] = newOrder; // Adds new order to orders for this posting
   posting.pending.push(newOrder);
+  posting.units = posting.units - amount;
   userOrders[name].push(String(orderId));
   orderId++;
   res.status(200).send();
