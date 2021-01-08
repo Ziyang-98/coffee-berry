@@ -2,6 +2,7 @@ var postingsInfo = {
     id: 2, 
     postings: { 
         1: { 
+            postingId: 1,
             name: "alice",
             pricePerUnit: 2,
             unit: 5,
