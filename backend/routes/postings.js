@@ -26,7 +26,7 @@ function getPostingFromId(postingId) {
 
 function getPostingsFromName(name) {
   if (!(name in userPostings)) {
-    return null;
+    return [];
   }
 
   return userPostings[name];
@@ -65,8 +65,10 @@ router.get("/allPostings", function (req, res) {
 router.get("/postingsWithName/:name", function (req, res) {
   var listOfPostingIndexes = getPostingsFromName(req.params.name);
   var listOfPostings = [];
-
-  listOfPostingIndexes.forEach((index) => listOfPostings.push(postings[index]));
+  listOfPostingIndexes.forEach((index) => {
+    listOfPostings.push(getPostingFromId(index));
+  });
+  console.log(listOfPostings);
   res.send(listOfPostings);
 });
 

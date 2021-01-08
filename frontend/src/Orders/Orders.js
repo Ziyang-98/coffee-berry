@@ -8,6 +8,7 @@ import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
 import Orders from "./OrderList";
 import axios from "axios";
+import SentimentVeryDissatisfiedIcon from "@material-ui/icons/SentimentVeryDissatisfied";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -15,9 +16,15 @@ const useStyles = makeStyles((theme) => ({
   },
 
   caption: {
-    margin: theme.spacing(8, 0),
+    backgroundColor: theme.palette.background.paper,
+    padding: theme.spacing(4, 0),
   },
-
+  emptyPage: {
+    height: theme.spacing(50),
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+  },
   appBarSpacer: theme.mixins.toolbar,
   content: {
     flexGrow: 1,
@@ -89,7 +96,7 @@ export default function Dashboard(props) {
         <div className={classes.caption}>
           <Typography
             component="h4"
-            variant="h4"
+            variant="h3"
             align="center"
             color="textPrimary"
             gutterBottom
@@ -98,17 +105,27 @@ export default function Dashboard(props) {
           </Typography>
         </div>
         <div className={classes.appBarSpacer} />
-        <Container maxWidth="lg" className={classes.container}>
-          <Grid container spacing={3}>
-            {/* Recent Orders */}
-            <Grid item xs={12}>
-              <Paper className={classes.paper}>
-                <Orders rows={rows} />
-              </Paper>
+        {rows.length === 0 && (
+          <Container Container className={classes.emptyPage} maxWidth="md">
+            <Typography variant="h5">
+              You have no postings available.
+            </Typography>
+            <SentimentVeryDissatisfiedIcon />
+          </Container>
+        )}
+        {rows.length > 0 && (
+          <Container maxWidth="lg" className={classes.container}>
+            <Grid container spacing={3}>
+              {/* Recent Orders */}
+              <Grid item xs={12}>
+                <Paper className={classes.paper}>
+                  <Orders rows={rows} />
+                </Paper>
+              </Grid>
             </Grid>
-          </Grid>
-          <Box pt={4}></Box>
-        </Container>
+            <Box pt={4}></Box>
+          </Container>
+        )}
       </main>
     </div>
   );

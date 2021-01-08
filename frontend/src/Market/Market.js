@@ -19,6 +19,7 @@ import Container from "@material-ui/core/Container";
 import FilterButton from "./Filter";
 import ButtonBase from "@material-ui/core/ButtonBase";
 import { withRouter } from "react-router-dom";
+import SentimentVeryDissatisfiedIcon from "@material-ui/icons/SentimentVeryDissatisfied";
 import axios from "axios";
 
 const useStyles = (theme) => ({
@@ -28,6 +29,12 @@ const useStyles = (theme) => ({
   heroContent: {
     backgroundColor: theme.palette.background.paper,
     padding: theme.spacing(4, 0, 4),
+  },
+  emptyPage: {
+    height: theme.spacing(50),
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
   },
   heroButtons: {
     marginTop: theme.spacing(0),
@@ -61,60 +68,6 @@ const useStyles = (theme) => ({
     padding: theme.spacing(6),
   },
 });
-
-// const basePostings = [
-//   {
-//     postingId: 1,
-//     username: "James",
-//     nameOfProduct: "Fresh Arabica Coffee Beans",
-//     units: 100,
-//     pricePerUnit: 35,
-//     image: "https://source.unsplash.com/G88j9KT5u4g/1600x900",
-//     tags: {
-//       beanType: "arabica",
-//       roastLevel: "light",
-//       organic: false,
-//     },
-//     description: "Fresh Arabica Coffee Beans from Brazil.",
-//     pending: [],
-//     confirmed: [],
-//     delivered: [],
-//   },
-//   {
-//     postingId: 2,
-//     username: "Oliver",
-//     nameOfProduct: "Robusta Beans",
-//     units: 120,
-//     pricePerUnit: 20,
-//     image: "https://source.unsplash.com/PMnJWQ1F_ww/1600x900",
-//     tags: {
-//       beanType: "robusta",
-//       roastLevel: "dark",
-//       organic: true,
-//     },
-//     description: "These beans were freshly harvested in India. 100% Organic",
-//     pending: [],
-//     confirmed: [],
-//     delivered: [],
-//   },
-//   {
-//     postingId: 3,
-//     username: "James",
-//     nameOfProduct: "Kopi Nganu",
-//     units: 50,
-//     pricePerUnit: 50,
-//     image: "https://source.unsplash.com/tvVkydhyspU/1600x900",
-//     tags: {
-//       beanType: "others",
-//       roastLevel: "",
-//       organic: true,
-//     },
-//     description: "Fresh from Indonesia. While stocks last.",
-//     pending: [],
-//     confirmed: [],
-//     delivered: [],
-//   },
-// ];
 
 class Market extends Component {
   constructor(props) {
@@ -244,6 +197,7 @@ class Market extends Component {
                       />
                     </FormControl>
                   </Grid>
+
                   <Grid item>
                     <FilterButton filter={this.filter} />
                   </Grid>
@@ -261,45 +215,55 @@ class Market extends Component {
               </div>
             </Container>
           </div>
-          <Container className={classes.cardGrid} maxWidth="md">
-            {/* End hero unit */}
-            <Grid container spacing={4}>
-              {this.state.postings.map((posting) => (
-                <Grid item key={posting.postingId} xs={12} sm={6} md={4}>
-                  <ButtonBase
-                    className={classes.buttonBase}
-                    onClick={(event) => {
-                      history.push(`/market/${posting.postingId}`);
-                    }}
-                  >
-                    <Card className={classes.card}>
-                      <CardMedia
-                        className={classes.cardMedia}
-                        image={posting.image}
-                        title={posting.nameOfProduct}
-                      />
-                      <CardContent className={classes.cardContent}>
-                        <Typography gutterBottom variant="h5" component="h2">
-                          {posting.nameOfProduct}
-                        </Typography>
-                        <Typography>{posting.description}</Typography>
-                      </CardContent>
-                      <CardActions>
-                        <Typography
-                          variant="subtitle1"
-                          component="h2"
-                          //align="right"
-                          className={classes.price}
-                        >
-                          ${posting.pricePerUnit} per kg
-                        </Typography>
-                      </CardActions>
-                    </Card>
-                  </ButtonBase>
-                </Grid>
-              ))}
-            </Grid>
-          </Container>
+          {this.state.postings.length === 0 && (
+            <Container Container className={classes.emptyPage} maxWidth="md">
+              <Typography variant="h5">
+                You have no postings available.
+              </Typography>
+              <SentimentVeryDissatisfiedIcon />
+            </Container>
+          )}
+          {this.state.postings.length > 0 && (
+            <Container className={classes.cardGrid} maxWidth="md">
+              {/* End hero unit */}
+              <Grid container spacing={4}>
+                {this.state.postings.map((posting) => (
+                  <Grid item key={posting.postingId} xs={12} sm={6} md={4}>
+                    <ButtonBase
+                      className={classes.buttonBase}
+                      onClick={(event) => {
+                        history.push(`/market/${posting.postingId}`);
+                      }}
+                    >
+                      <Card className={classes.card}>
+                        <CardMedia
+                          className={classes.cardMedia}
+                          image={posting.image}
+                          title={posting.nameOfProduct}
+                        />
+                        <CardContent className={classes.cardContent}>
+                          <Typography gutterBottom variant="h5" component="h2">
+                            {posting.nameOfProduct}
+                          </Typography>
+                          <Typography>{posting.description}</Typography>
+                        </CardContent>
+                        <CardActions>
+                          <Typography
+                            variant="subtitle1"
+                            component="h2"
+                            //align="right"
+                            className={classes.price}
+                          >
+                            ${posting.pricePerUnit} per kg
+                          </Typography>
+                        </CardActions>
+                      </Card>
+                    </ButtonBase>
+                  </Grid>
+                ))}
+              </Grid>
+            </Container>
+          )}
         </main>
         {/* Footer */}
       </React.Fragment>
