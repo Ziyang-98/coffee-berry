@@ -2,7 +2,6 @@ import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import Container from "@material-ui/core/Container";
-import Header from "./Header";
 import MainFeaturedPost from "./MainFeaturedPost";
 
 const useStyles = makeStyles((theme) => ({
@@ -13,13 +12,6 @@ const useStyles = makeStyles((theme) => ({
     height: "80%",
   },
 }));
-
-const sections = [
-  { title: "Home", url: "#" },
-  { title: "Market", url: "#" },
-  { title: "Your Orders", url: "#" },
-  { title: "Your Postings", url: "#" },
-];
 
 const mainFeaturedPost = {
   title: "The new experience for coffee beans",
@@ -35,7 +27,6 @@ export default function Home() {
     <React.Fragment>
       <CssBaseline />
       <Container maxWidth="lg" className={classes.root}>
-        <Header title="Coffeeberry" sections={sections} />
         <main>
           <MainFeaturedPost post={mainFeaturedPost} />
         </main>

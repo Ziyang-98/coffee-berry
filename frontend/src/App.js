@@ -1,18 +1,17 @@
 import React, { Component } from "react";
 import { Route, withRouter } from "react-router-dom";
 import "./App.css";
+import Header from "./Header/Header";
 import Home from "./Home/Home";
-import Footer from "./Footer";
+import Footer from "./Footer/Footer";
 
-// function App() {
-//   return (
-//     <div className="App">
-//       <Route exact path="/" component={Home} />
-//     </div>
-//   );
-// }
+const sections = [
+  { title: "Home", url: "#" },
+  { title: "Market", url: "#" },
+  { title: "Your Orders", url: "#" },
+  { title: "Your Postings", url: "#" },
+];
 
-// export default withRouter(App);
 class App extends Component {
   constructor(props) {
     super(props);
@@ -24,6 +23,7 @@ class App extends Component {
   render() {
     return (
       <div>
+        <Header title="Coffeeberry" sections={sections} />
         <Route path="/" component={Home} />
         <Footer
           title="Footer"
