@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 
+// define the Express app
 const app = express();
 
 /* GET home page. */
