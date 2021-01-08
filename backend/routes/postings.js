@@ -1,78 +1,127 @@
 var express = require('express');
 var router = express.Router();
 
-// define the Express app
-const app = express();
-
 // the database
-const postings = [];
+var ordersInfo = require('./../data/orders')();
+var orders = ordersInfo.orders;
+var orderId = ordersInfo.id;
 
-/* GET all postings. */
-router.get('/', function(req, res) {
+var postingsInfo = require('./../data/postings')();
+var postings = postingsInfo.postings;
+var postingId = postingsInfo.id;
+
+// {Name : [_id]} pairs
+var userMappings = require('./../data/users')();
+var userOrders = userMappings.orders;
+var userPostings = userMappings.postings;
+
+function getPostingFromId(postingId) {
+    // Given name does not exist
+    if (!(postingId in postings)) {
+        return null;
+    }
+
+    return postings[postingId];
+}
+
+function getPostingsFromName(name) {
+    if (!(name in userPostings)) {
+        return null;
+    } 
+
+    return userPostings[name];
+}
+
+function getPostingFromId(postingId) {
+    if (!(postingId in postings)) {
+        return null;
+    }
+
+    return postings[postingId];
+}
+
+function createPosting(na, ppu, u, t, nop, desc, dp) {
+    return {
+        name: na,
+        pricePerUnit, ppu,
+        unit: u,
+        tags: t,
+        nameOfProduct: nop,
+        description: desc,
+        displayPhotos: dp
+    };
+}
+
+// Find all postings
+router.get('/allPostings', function(req, res) {
     res.send(postings);
 });
 
-// Find an order
-router.get('/:postingId', function(req, res) {
-    var found;
-    postings.forEach(posting => {
-        if (posting.postingId == req.params.postingId) {
-            found = posting; 
-        }
-    });
-    if (found == null) {
-        res.status(500).send();
-    }
-    res.send(found);
+// Find list of postings using name
+router.get('/postingsWithName/:name', function(req, res) {
+    var listOfPostingIndexes = getPostingsFromName(req.params.name);
+    var listOfPostings = [];
+    
+    listOfPostingIndexes.forEach(index => listOfPostings.push(postings[index]));
+    res.send(listOfPostings);
 });
 
-// Adds an posting to postings
-router.post('/posting', function(req, res) {
-    const {postingId, units, pricePerUnit, massPerUnit, tags, description, displayPhotos, orders} = req.body;
-    const newPosting = {
-        postingId, 
-        units, 
-        pricePerUnit, 
-        massPerUnit, 
-        tags, 
-        description, 
-        displayPhotos, 
-        orders
-    };
-    postings.push(newPosting);
+// Find posting using id
+router.get('/postingWithId/:postingId', function(req, res) {
+    var posting = getPostingFromId(req.params.postingId);
+    if (posting == null) {
+        res.status(500).send();
+    }
+    res.send(posting);
+});
+
+// Adds a posting
+router.post('/createPosting', function(req, res) {
+    const {name, pricePerUnit, unit, tags, nameOfProduct, description, displayPhotos} = req.body;
+
+    // Creates a new posting
+    const newPosting = createPosting(name, pricePerUnit, unit, tags, nameOfProduct, description, displayPhotos);
+
+    postings[postingId] = newPosting;
+    postingId++;
     res.status(200).send();
 });
 
 // Update a posting
-router.post('/update/:postingId', function(req, res) {
-    const {postingId, units, pricePerUnit, massPerUnit, tags, description, displayPhotos, orders} = req.body;
-    const newPosting = {
-        postingId, 
-        units, 
-        pricePerUnit, 
-        massPerUnit, 
-        tags, 
-        description, 
-        displayPhotos, 
-        orders
-    };
-    var index;
-    index = postings.findIndex(posting => posting.postingId == postingId);
-    if (index == -1) {
+router.post('/updatePosting/:postingId', function(req, res) {
+    const {name, pricePerUnit, unit, tags, nameOfProduct, description, displayPhotos} = req.body;
+    const posting = getPostingFromId(postingId);
+    
+    if (posting == null) {
         res.status(500).send();
     }
-    postings[index] = newPosting;
+
+    // Creates a new order
+    const newPosting = createPosting(name, pricePerUnit, unit, tags, nameOfProduct, description, displayPhotos);
+    
+    postings[postingId] = newPosting;
     res.status(200).send();
 });
 
-// Delete a posting
-router.post('/delete/:postingId', function(req, res) {
-    var index;
-    index = postings.findIndex(posting => posting.postingId == postingId);
-    if (index == -1) {
+// Delete an order
+router.post('/deletePosting/:postingId', function(req, res) {
+    const {postingId} = req.body;
+    const posting = getPostingFromId(postingId);
+
+    if (posting == null) {
         res.status(500).send();
     }
-    orders.splice(index, 1);
+    // Delete all other orders with this posting first
+    var orderIndexes = Object.keys(posting.orders);
+    orderIndexes.forEach(index => delete orders[index]);
+    for (const [name, indexes] of Object.entries(userOrders)) {
+        var index = indexes.findIndex(id => id == postingId);
+        if (index != -1) {
+            delete indexes[index];
+        }
+    }
+
+    delete posting[postingId];
     res.status(200).send();
 });
 

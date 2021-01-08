@@ -1,9 +1,9 @@
 var userMappings = {
     orders: {
-        "bob": [1]
+        "bob": ["1"]
     }, 
     postings: {
-        "alice": [1]
+        "alice": ["1"]
     }
 }
 

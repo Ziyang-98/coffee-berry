@@ -12,7 +12,6 @@ var postings = postingsInfo.postings;
 // {Name : [_id]} pairs
 var userMappings = require('./../data/users')();
 var userOrders = userMappings.orders;
-var userPostings = userMappings.postings;
 
 function getOrderFromId(orderId) {
     // Given name does not exist
@@ -60,7 +59,7 @@ router.get('/ordersWithName/:name', function(req, res) {
 });
 
 // Find order using id
-router.get('/ordersWithId/:orderId', function(req, res) {
+router.get('/orderWithId/:orderId', function(req, res) {
     var order = getOrderFromId(req.params.orderId);
     if (order == null) {
         res.status(500).send();

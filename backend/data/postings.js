@@ -2,7 +2,17 @@ var postingsInfo = {
     id: 2, 
     postings: { 
         1: { 
-            name: "alice", 
+            name: "alice",
+            pricePerUnit: 2,
+            unit: 5,
+            tags: {
+                beanType: "arabica",
+                roastLevel: "light",
+                organic: true
+            },
+            nameOfProduct: "BerryGoodCoffee",
+            description: "The best coffee available.",
+            displayPhotos: null, 
             orders: {
                 1: [
                     {
