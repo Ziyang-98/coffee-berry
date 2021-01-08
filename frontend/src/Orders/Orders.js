@@ -35,10 +35,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function submit(name) {
-  console.log(name);
-}
-
 // Generate Order Data
 function createData(id, date, productName, amount, status) {
   return { id, date, productName, amount, status };

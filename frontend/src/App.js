@@ -6,6 +6,7 @@ import Home from "./Home/Home";
 import Market from "./Market/Market";
 import OrderForm from "./Orders/Form";
 import Orders from "./Orders/Orders";
+import PostingForm from "./Postings/Form";
 import Postings from "./Postings/Postings";
 import Footer from "./Footer/Footer";
 
@@ -32,7 +33,8 @@ class App extends Component {
         <Route path="/market" component={Market} />
         <Route exact path="/orders" component={OrderForm} />
         <Route path="/orders/:name" component={Orders} />
-        <Route path="/postings" component={Postings} />
+        <Route exact path="/postings" component={PostingForm} />
+        <Route path="/postings/:name" component={Postings} />
         <Footer
           title="Footer"
           description="Something here to give the footer a purpose!"

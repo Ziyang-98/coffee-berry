@@ -17,6 +17,7 @@ import Typography from "@material-ui/core/Typography";
 import { withStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import FilterButton from "./Filter";
+import ButtonBase from "@material-ui/core/ButtonBase";
 
 const useStyles = (theme) => ({
   icon: {
@@ -33,6 +34,9 @@ const useStyles = (theme) => ({
     paddingTop: theme.spacing(8),
     paddingBottom: theme.spacing(8),
   },
+  buttonBase: {
+    height: "100%",
+  },
   card: {
     height: "100%",
     display: "flex",
@@ -44,13 +48,53 @@ const useStyles = (theme) => ({
   cardContent: {
     flexGrow: 1,
   },
+  price: {
+    margin: theme.spacing(0, 1),
+    fontWeight: 600,
+    color: "#6F4E37",
+  },
   footer: {
     backgroundColor: theme.palette.background.paper,
     padding: theme.spacing(6),
   },
 });
 
-const cards = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+const basePostings = [
+  {
+    postingId: 1,
+    username: "James",
+    nameOfProduct: "Fresh Arabica Coffee Beans",
+    units: 100,
+    pricePerUnit: 35,
+    image: "https://source.unsplash.com/G88j9KT5u4g/1600x900",
+    tags: {
+      beanType: "arabica",
+      roastLevel: "light",
+      organic: false,
+    },
+    description: "Fresh Arabica Coffee Beans from Brazil.",
+    pending: [],
+    confirmed: [],
+    delivered: [],
+  },
+  {
+    postingId: 2,
+    username: "Oliver",
+    nameOfProduct: "Robusta Beans",
+    units: 120,
+    pricePerUnit: 20,
+    image: "https://source.unsplash.com/PMnJWQ1F_ww/1600x900",
+    tags: {
+      beanType: "robusta",
+      roastLevel: "dark",
+      organic: true,
+    },
+    description: "These beans were freshly harvested in India. 100% Organic",
+    pending: [],
+    confirmed: [],
+    delivered: [],
+  },
+];
 
 class Market extends Component {
   constructor(props) {
@@ -58,16 +102,50 @@ class Market extends Component {
 
     this.state = {
       searchValue: "",
+      postings: basePostings,
     };
     this.filter = this.filter.bind(this);
+    this.reset = this.reset.bind(this);
   }
 
   filter(beanType, roastLevel, isOrganic) {
-    console.log(beanType, roastLevel, isOrganic);
+    let filteredPostings = [...basePostings];
+    const tagsToFilter = [];
+    if (beanType) {
+      tagsToFilter.push(beanType);
+    }
+
+    if (roastLevel) {
+      tagsToFilter.push(roastLevel);
+    }
+
+    if (isOrganic) {
+      tagsToFilter.push(isOrganic);
+    }
+
+    console.log(tagsToFilter, "Before filter");
+    for (let tag of tagsToFilter) {
+      filteredPostings = filteredPostings.filter((posting) => {
+        return Object.values(posting.tags).includes(tag);
+      });
+    }
+    console.log(tagsToFilter, "After filter");
+
+    this.setState({
+      postings: filteredPostings,
+    });
+  }
+
+  reset() {
+    this.setState({ postings: basePostings });
   }
 
   submit(value) {
-    console.log(value);
+    let filteredPostings = [...basePostings];
+    filteredPostings = filteredPostings.filter((posting) => {
+      return posting.nameOfProduct.toLowerCase().includes(value.toLowerCase());
+    });
+    this.setState({ searchValue: "", postings: filteredPostings });
   }
 
   setSearchValue = (e) => {
@@ -136,7 +214,7 @@ class Market extends Component {
                       variant="outlined"
                       color="secondary"
                       className={classes.button}
-                      //onClick={handleClickOpen}
+                      onClick={this.reset}
                     >
                       Reset
                     </Button>
@@ -148,29 +226,36 @@ class Market extends Component {
           <Container className={classes.cardGrid} maxWidth="md">
             {/* End hero unit */}
             <Grid container spacing={4}>
-              {cards.map((card) => (
-                <Grid item key={card} xs={12} sm={6} md={4}>
-                  <Card className={classes.card}>
-                    <CardMedia
-                      className={classes.cardMedia}
-                      image="https://source.unsplash.com/collection/1499506/1600x900"
-                      title="Image title"
-                    />
-                    <CardContent className={classes.cardContent}>
-                      <Typography gutterBottom variant="h5" component="h2">
-                        Heading
-                      </Typography>
-                      <Typography>
-                        This is a media card. You can use this section to
-                        describe the content.
-                      </Typography>
-                    </CardContent>
-                    <CardActions>
-                      <Button size="small" color="primary">
-                        View
-                      </Button>
-                    </CardActions>
-                  </Card>
+              {this.state.postings.map((posting) => (
+                <Grid item key={posting.postingId} xs={12} sm={6} md={4}>
+                  <ButtonBase
+                    className={classes.buttonBase}
+                    onClick={(event) => {}}
+                  >
+                    <Card className={classes.card}>
+                      <CardMedia
+                        className={classes.cardMedia}
+                        image={posting.image}
+                        title={posting.nameOfProduct}
+                      />
+                      <CardContent className={classes.cardContent}>
+                        <Typography gutterBottom variant="h5" component="h2">
+                          {posting.nameOfProduct}
+                        </Typography>
+                        <Typography>{posting.description}</Typography>
+                      </CardContent>
+                      <CardActions>
+                        <Typography
+                          variant="subtitle1"
+                          component="h2"
+                          //align="right"
+                          className={classes.price}
+                        >
+                          ${posting.pricePerUnit} per kg
+                        </Typography>
+                      </CardActions>
+                    </Card>
+                  </ButtonBase>
                 </Grid>
               ))}
             </Grid>
