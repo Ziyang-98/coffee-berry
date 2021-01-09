@@ -39,6 +39,7 @@ export default function OrderDialog({ posting, open, handleClose, postOrder }) {
   const [name, setName] = React.useState("");
   const [address, setAddress] = React.useState("");
   const [units, setUnits] = React.useState(0);
+
   const handleSliderChange = (event, newValue) => {
     setUnits(newValue);
   };
@@ -59,6 +60,7 @@ export default function OrderDialog({ posting, open, handleClose, postOrder }) {
     if (!(name === "" || address === "" || units === 0)) {
       console.log("All details are present");
       postOrder(posting, name, address, units);
+      setSubmitted(true);
       setName("");
       setAddress("");
       setUnits(0);
@@ -69,7 +71,7 @@ export default function OrderDialog({ posting, open, handleClose, postOrder }) {
   const [noName, setNoName] = React.useState(false);
   const [noAddress, setNoAddress] = React.useState(false);
   const [noUnits, setNoUnits] = React.useState(false);
-
+  const [submitted, setSubmitted] = React.useState(false);
   /*----Handle Alerts----*/
   const handleNoName = () => {
     setNoName(true);
@@ -84,6 +86,7 @@ export default function OrderDialog({ posting, open, handleClose, postOrder }) {
   };
 
   const handleAlertClose = () => {
+    setSubmitted(false);
     setNoName(false);
     setNoAddress(false);
     setNoUnits(false);
@@ -92,18 +95,18 @@ export default function OrderDialog({ posting, open, handleClose, postOrder }) {
   const getDisplayLabel = () => {
     if (noName || noAddress || noUnits) {
       return noName && noAddress && noUnits
-        ? "Please enter your name, address and the number of units you would like to purchase."
+        ? "Please enter your name, address and the number of units cannot be 0."
         : noName && noAddress
         ? "Please enter your name and address."
         : noName && noUnits
-        ? "Please enter your name and the number of units you would like to purchase."
+        ? "Please enter your name and the number of units cannot be 0."
         : noName
         ? "Please enter your name."
         : noAddress && noUnits
-        ? "Please enter your address and the number of units you would like to purchase."
+        ? "Please enter your address and the number of units cannot be 0."
         : noAddress
         ? "Please enter your address"
-        : "Please enter the number of units you would like to purchase.";
+        : "The number of units cannot be 0";
     }
   };
 
@@ -118,10 +121,12 @@ export default function OrderDialog({ posting, open, handleClose, postOrder }) {
         <DialogTitle id="form-dialog-title">Order Form</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            Please enter your name, address and number of units that you would
-            like to order.
+            Please enter your name, address, the link of your product image and
+            number of units that you would like to order. Remember your name so
+            that you can track your orders in "Your Orders" page!
           </DialogContentText>
           <TextField
+            required
             autoFocus
             margin="dense"
             id="name"
@@ -131,6 +136,7 @@ export default function OrderDialog({ posting, open, handleClose, postOrder }) {
             onChange={(e) => setName(e.target.value)}
           />
           <TextField
+            required
             autoFocus
             margin="dense"
             id="address"
@@ -140,7 +146,7 @@ export default function OrderDialog({ posting, open, handleClose, postOrder }) {
             onChange={(e) => setAddress(e.target.value)}
           />
           <div className={classes.unitsForm}>
-            <Typography color="textSecondary">Units (In KG)</Typography>
+            <Typography color="textSecondary">Units (In KG) *</Typography>
             <div className={classes.sliderHolder}>
               <Slider
                 className={classes.slider}
@@ -154,6 +160,11 @@ export default function OrderDialog({ posting, open, handleClose, postOrder }) {
               />
             </div>
           </div>
+          <div>
+            <Typography variant="h5">
+              Total: ${units * posting.pricePerUnit}
+            </Typography>
+          </div>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose} color="secondary">
@@ -164,6 +175,19 @@ export default function OrderDialog({ posting, open, handleClose, postOrder }) {
           </Button>
         </DialogActions>
       </Dialog>
+      <Snackbar
+        open={submitted}
+        autoHideDuration={3000}
+        onClose={handleAlertClose}
+      >
+        <Alert
+          className={classes.alert}
+          onClose={handleAlertClose}
+          severity="success"
+        >
+          The order has been confirmed!
+        </Alert>
+      </Snackbar>
       <Snackbar
         open={noName || noAddress || noUnits}
         autoHideDuration={3000}

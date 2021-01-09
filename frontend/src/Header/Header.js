@@ -24,10 +24,10 @@ const useStyles = makeStyles((theme) => ({
     fontSize: 15,
     flexShrink: 0,
     [theme.breakpoints.down("sm")]: {
-      padding: theme.spacing(0, 6),
+      padding: theme.spacing(0, 3),
     },
     [theme.breakpoints.down("xs")]: {
-      padding: theme.spacing(0, 3),
+      padding: theme.spacing(0, 1),
     },
   },
 }));
