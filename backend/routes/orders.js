@@ -106,6 +106,7 @@ router.post("/createOrder", function (req, res) {
 // Update an order
 router.post("/updateOrder/:orderId", function (req, res) {
   const {
+    orderId,
     name,
     postingId,
     productName,
@@ -114,8 +115,8 @@ router.post("/updateOrder/:orderId", function (req, res) {
     status,
     date,
   } = req.body;
+  console.log("reached update order");
   const posting = getPostingFromId(postingId);
-
   if (posting == null) {
     res.status(500).send();
   }
@@ -125,36 +126,41 @@ router.post("/updateOrder/:orderId", function (req, res) {
     orderId,
     name,
     postingId,
-    posting.nameOfProduct,
+    productName,
     address,
     amount,
     status,
     date
   );
-
   orders[orderId] = newOrder;
-  if (posting.pending.some((order) => orderId === order.orderId)) {
-    posting.pending.filter((order) => orderId === order.orderId);
-  } else if (posting.confirmed.some((order) => orderId === order.orderId)) {
-    posting.confirmed.filter((order) => orderId === order.orderId);
-  } else if (posting.confirmed.some((order) => orderId === order.orderId)) {
-    posting.delivered.filter((order) => orderId === order.orderId);
-  } else {
-    res.status(500).send();
-    return;
-  }
+
+  posting.pending = posting.pending.filter(
+    (order) => order.orderId !== newOrder.orderId
+  );
+
+  posting.confirmed = posting.confirmed.filter(
+    (order) => order.orderId !== newOrder.orderId
+  );
+
+  posting.delivered = posting.delivered.filter(
+    (order) => order.orderId !== newOrder.orderId
+  );
 
   switch (status) {
     case "pending":
-      posting.pending.push(order);
+      posting.pending.push(newOrder);
+      break;
     case "confirmed":
-      posting.confirmed.push(order);
+      posting.confirmed.push(newOrder);
+      break;
     case "delivered":
-      posting.pending.push(order);
+      posting.delivered.push(newOrder);
+      break;
   }
+  console.log(posting, "After update");
+
   res.status(200).send();
 });
-
 // Delete an order
 router.post("/deleteOrder/:orderId", function (req, res) {
   const { name, postingId } = req.body;

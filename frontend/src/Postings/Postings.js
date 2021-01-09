@@ -71,7 +71,7 @@ class Postings extends Component {
 
   async componentDidMount() {
     const userPostings = await axios.get(
-      `http://localhost:9000/postings//postingsWithName/${this.state.name}`
+      `http://localhost:9000/postings/postingsWithName/${this.state.name}`
     );
     console.log(userPostings.data);
     this.setState({ postings: userPostings.data });
@@ -79,6 +79,8 @@ class Postings extends Component {
 
   render() {
     const { classes } = this.props;
+    const { history } = this.props;
+
     return (
       <React.Fragment>
         <CssBaseline />
@@ -113,7 +115,11 @@ class Postings extends Component {
                   <Grid item key={posting.postingId} xs={12} sm={6} md={4}>
                     <ButtonBase
                       className={classes.buttonBase}
-                      onClick={(event) => {}}
+                      onClick={(event) => {
+                        history.push(
+                          `/postings/${this.state.name}/${posting.postingId}`
+                        );
+                      }}
                     >
                       <Card className={classes.card}>
                         <CardMedia

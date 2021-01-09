@@ -140,7 +140,7 @@ router.post("/updatePosting/:postingId", function (req, res) {
     res.status(500).send();
   }
 
-  // Creates a new order
+  // Creates a new posting
   const newPosting = createPosting(
     postingId,
     name,
@@ -163,21 +163,38 @@ router.post("/updatePosting/:postingId", function (req, res) {
 router.post("/deletePosting/:postingId", function (req, res) {
   const { postingId } = req.body;
   const posting = getPostingFromId(postingId);
-
+  console.log(postingId, "reach delete posting");
   if (posting == null) {
     res.status(500).send();
   }
   // Delete all other orders with this posting first
-  var pendingIndexes = Object.keys(posting.pending);
-  pendingIndexes.forEach((index) => delete orders[index]);
+  var deliveredIndexes = Object.values(posting.delivered);
+  deliveredIndexes = deliveredIndexes.map((order) => order.orderId);
+  deliveredIndexes.forEach((orderId) => {
+    delete orders[orderId];
+  });
+  console.log("deleted order from orders");
   for (const [name, indexes] of Object.entries(userOrders)) {
+    var index = indexes.findIndex((id) => deliveredIndexes.includes(id));
+    if (index != -1) {
+      delete indexes[index];
+    }
+  }
+  console.log("deleted order from userOrders");
+
+  for (const [name, indexes] of Object.entries(userPostings)) {
     var index = indexes.findIndex((id) => id == postingId);
     if (index != -1) {
       delete indexes[index];
     }
   }
 
-  delete posting[postingId];
+  delete postings[String(postingId)];
+  console.log(postings, "[postings]");
+  console.log(userPostings, "[userPostings]");
+  console.log(orders, "[orders]");
+  console.log(userOrders, "[userOrders]");
+
   res.status(200).send();
 });
 
