@@ -43,7 +43,7 @@ function getPostingFromId(postingId) {
 function createPosting(id, na, ppu, u, t, nop, desc, dp, p, c, d) {
   return {
     postingId: id,
-    name: na,
+    username: na,
     pricePerUnit: ppu,
     units: u,
     tags: t,
