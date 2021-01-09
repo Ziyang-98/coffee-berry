@@ -14,7 +14,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const mainFeaturedPost = {
-  title: "The new experience for coffee beans",
+  title: "The ultimate experience for coffee beans enthusiasts and suppliers",
   description: "There is never too much coffee",
   image: "https://source.unsplash.com/collection/1499506/1600x900",
   imgText: "main image description",

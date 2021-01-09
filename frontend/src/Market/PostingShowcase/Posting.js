@@ -15,6 +15,10 @@ const useStyles = (theme) => ({
     height: theme.spacing(65),
     margin: theme.spacing(10, 0),
     backgroundColor: theme.palette.background.paper,
+    [theme.breakpoints.down("sm")]: {
+      flexDirection: "column",
+      height: theme.spacing(110),
+    },
   },
   image: {
     width: theme.spacing(60),

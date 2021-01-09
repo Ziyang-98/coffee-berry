@@ -51,10 +51,7 @@ class App extends Component {
         <Route exact path="/create_posting" component={CreatePosting} />
         <Route path="/create_posting/successful-upload" component={Success} />
 
-        <Footer
-          title="Footer"
-          description="Something here to give the footer a purpose!"
-        />
+        <Footer title="Coffeeberry" description="A project by Python Snakes" />
       </div>
     );
   }
